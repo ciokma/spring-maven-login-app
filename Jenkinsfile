@@ -20,19 +20,19 @@ pipeline {
         }
         stage('Crear imagen Docker') {
             steps {
-              sh 'docker build -t ciokma/springboot-cdojo:latest .'
-              sh 'docker image save -o ciokma-springboot-latest.tar ciokma/springboot-cdojo:latest'
+              sh 'docker build -t ciokma/spring-login:latest .'
+              sh 'docker image save -o ciokma-spring-login-latest.tar ciokma/spring-login:latest'
               
             }
         }
         stage('Upload Artifact to Nexus') {
 	  steps {
-   		   nexusArtifactUploader artifacts: [[artifactId: '01-spring-app',
+   		   nexusArtifactUploader artifacts: [[artifactId: '01-spring-login',
 					       classifier: '',
-					       file: 'target/spring-app-0.0.1-SNAPSHOT.jar',
+					       file: 'target/spring-login-0.0.1-SNAPSHOT.jar',
 					       type: 'jar']],
 		    credentialsId: 'nexus-credentials',
-		    groupId: 'spring-app',
+		    groupId: 'spring-login',
 		    nexusUrl: '54.147.37.68:8081',
 		    nexusVersion: 'nexus3',
 		    protocol: 'http',
@@ -43,8 +43,8 @@ pipeline {
         stage('Build and Push Docker Image to Nexus') {
 	  steps {
 		  sh 'docker login -u $NEXUSDOCKER_CREDENTIALS_USR -p $NEXUSDOCKER_CREDENTIALS_PSW ec2-54-147-37-68.compute-1.amazonaws.com:8085'
-		  sh "docker build . -t ec2-54-147-37-68.compute-1.amazonaws.com:8085/springboot:${currentBuild.number}"
-		  sh "docker push ec2-54-147-37-68.compute-1.amazonaws.com:8085/springboot:${currentBuild.number}"
+		  sh "docker build . -t ec2-54-147-37-68.compute-1.amazonaws.com:8085/spring-login:${currentBuild.number}"
+		  sh "docker push ec2-54-147-37-68.compute-1.amazonaws.com:8085/spring-login:${currentBuild.number}"
 		  
 	  }
        }
@@ -58,7 +58,7 @@ pipeline {
 	stage('Push to dockerhub') {
 
 		steps {
-			sh 'docker push ciokma/springboot-cdojo:latest'
+			sh 'docker push ciokma/spring-login:latest'
 		}
 	}
         
@@ -66,11 +66,10 @@ pipeline {
             steps {
               sh '''
 		    oc login --token=kMpcdg7ThlPQo5tkaC-9gDEXI7F_AO-6l8BLiWt7wXQ --server=https://ec2-54-224-88-191.compute-1.amazonaws.com:8443 --insecure-skip-tls-verify
-		    oc delete all -l app=springboot-ms
-		 
-		    # oc new-app ciokma/springboot-cdojo:latest --name springboot-ms
+		    oc delete all -l app=spring-login
+		    oc new-app ciokma/spring-login:latest --name springboot-ms
 		  '''
-		   sh "oc new-app ec2-54-147-37-68.compute-1.amazonaws.com:8085/springboot:${currentBuild.number} --name springboot-ms"
+		   sh "#oc new-app ec2-54-147-37-68.compute-1.amazonaws.com:8085/springboot:${currentBuild.number} --name springboot-ms"
 		   sh 'oc expose svc/springboot-ms --name=springboot-ms'
                   
              }
