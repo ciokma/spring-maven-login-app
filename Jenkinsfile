@@ -29,7 +29,7 @@ pipeline {
 	  steps {
    		   nexusArtifactUploader artifacts: [[artifactId: '01-spring-login',
 					       classifier: '',
-					       file: 'target/registration-login-demo-0.0.1-SNAPSHOT.jar.jar',
+					       file: 'target/registration-login-demo-0.0.1-SNAPSHOT.jar',
 					       type: 'jar']],
 		    credentialsId: 'nexus-credentials',
 		    groupId: 'spring-login',
