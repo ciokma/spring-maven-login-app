@@ -53,4 +53,12 @@ public class UserDto
 	}
 	@NotEmpty(message = "Password should not be empty")
     private String password;
+	@NotEmpty(message = "Confirm Password should not be empty")
+    private String confirmPassword;
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
+	}
 }

@@ -54,6 +54,10 @@ public class AuthController {
         if (existing != null) {
             result.rejectValue("email", null, "There is already an account registered with that email");
         }
+        //validating password and confirm password
+        if (user.getPassword() != user.getConfirmPassword()) {
+        	result.rejectValue("password", null, "There password and confirm pw fields are not equal, please try again.");
+        }
         if (result.hasErrors()) {
             model.addAttribute("user", user);
             return "register";
