@@ -1,9 +1,11 @@
 package com.example.registrationlogindemo.controller;
 
 import com.example.registrationlogindemo.dto.CourseDto;
+import com.example.registrationlogindemo.dto.StudentDto;
 import com.example.registrationlogindemo.dto.UserDto;
 import com.example.registrationlogindemo.entity.Course;
 import com.example.registrationlogindemo.entity.Instructor;
+import com.example.registrationlogindemo.entity.Student;
 import com.example.registrationlogindemo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -117,4 +119,54 @@ public class AuthController {
 		model.addAttribute("course", course);
 		return "course";
 	}
+	
+	
+	
+// student method
+    
+    
+    // handler method to handle user registration request
+    @GetMapping("student")
+    public String student(Model model){
+    	StudentDto student = new StudentDto();
+        model.addAttribute("student", student);
+        return "student";
+    }
+    
+    
+ 
+
+    // handler method to handle register user form submit request
+    @PostMapping("/register_student")
+    public String register_student(@Valid @ModelAttribute("course") StudentDto student,
+                               BindingResult result,
+                               Model model){
+        Student existing = userService.findStudentByName(student.getName());
+        if (existing != null && student.getId() == 0) {
+            result.rejectValue("email", null, "There is already an existing student registered with that name");
+        }
+        if (result.hasErrors()) {
+            model.addAttribute("student", student);
+            return "student";
+        }
+        userService.saveStudent(student);
+        return "redirect:/student?success";
+    }
+
+    @GetMapping("/students")
+    public String listRegisteredStudents(Model model){
+        List<StudentDto> students = userService.findAllStudents();
+        model.addAttribute("students", students);
+        return "students";
+    }
+    @GetMapping("/editStudent/{name}")
+	public String editStudent(@PathVariable String name, Model model){
+		Student student=userService.findStudentByName(name);
+		model.addAttribute("student", student);
+		return "student";
+	}
+	
+
+	
+	
 }

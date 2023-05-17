@@ -1,11 +1,14 @@
 package com.example.registrationlogindemo.service.impl;
 
 import com.example.registrationlogindemo.dto.CourseDto;
+import com.example.registrationlogindemo.dto.StudentDto;
 import com.example.registrationlogindemo.dto.UserDto;
 import com.example.registrationlogindemo.entity.Role;
+import com.example.registrationlogindemo.entity.Student;
 import com.example.registrationlogindemo.entity.Course;
 import com.example.registrationlogindemo.entity.Instructor;
 import com.example.registrationlogindemo.repository.RoleRepository;
+import com.example.registrationlogindemo.repository.StudentRepository;
 import com.example.registrationlogindemo.repository.CourseRepository;
 import com.example.registrationlogindemo.repository.InstructorRepository;
 import com.example.registrationlogindemo.service.UserService;
@@ -23,15 +26,19 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
     private CourseRepository courseRepository;
+    private StudentRepository studentRepository;
+    
     public UserServiceImpl(InstructorRepository instructorRepository,
                            RoleRepository roleRepository,
                            CourseRepository courseRepository,
+                           StudentRepository studentRepository,
                            PasswordEncoder passwordEncoder
                           ) {
         this.instructorRepository = instructorRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.courseRepository = courseRepository;
+        this.studentRepository = studentRepository;
     }
 
     @Override
@@ -117,5 +124,37 @@ public class UserServiceImpl implements UserService {
         courseDto.setDescription(course.getDescription());
         return courseDto;
     }
-	
+
+	@Override
+	public void saveStudent(StudentDto studentDto) {
+		// TODO Auto-generated method stub
+		Student student = new Student();
+		student.setId(studentDto.getId());
+		student.setName(studentDto.getName());
+		student.setEmail(studentDto.getEmail());
+      
+
+        studentRepository.save(student);
+		
+	}
+
+	@Override
+	public Student findStudentByName(String name) {
+		// TODO Auto-generated method stub
+		return studentRepository.findByName(name);
+	}
+
+	@Override
+	public List<StudentDto> findAllStudents() {
+		List<Student> students = studentRepository.findAll();
+        return students.stream().map((student) -> convertEntityStudentToDto(student))
+                .collect(Collectors.toList());
+	}
+	private StudentDto convertEntityStudentToDto(Student student){
+	        StudentDto studentDto = new StudentDto();
+	        studentDto.setId(student.getId());
+	        studentDto.setName(student.getName());
+	        studentDto.setEmail(student.getEmail());
+	        return studentDto;
+    }
 }
