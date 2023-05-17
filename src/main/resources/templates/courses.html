@@ -53,6 +53,9 @@
                 <td th:text="${course.dropInPrice}"></td>
                 <td th:text="${course.timeCourse}"></td>
                 <td th:text="${course.description}"></td>
+                <td>
+			<a th:href="@{/edit/}+${course.name}" class="btn btn-warning">Edit</a>
+			</td>
             </tr>
         </tbody>
     </table>

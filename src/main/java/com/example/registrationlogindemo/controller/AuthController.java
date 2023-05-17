@@ -11,9 +11,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class AuthController {
@@ -87,7 +89,7 @@ public class AuthController {
                                BindingResult result,
                                Model model){
         Course existing = userService.findCourseByName(course.getName());
-        if (existing != null) {
+        if (existing != null && course.getId() == 0) {
             result.rejectValue("email", null, "There is already an existing course registered with that name");
         }
         if (result.hasErrors()) {
@@ -104,4 +106,11 @@ public class AuthController {
         model.addAttribute("courses", courses);
         return "courses";
     }
+    
+	@GetMapping("/edit/{name}")
+	public String edit(@PathVariable String name, Model model){
+		Course course=userService.findCourseByName(name);
+		model.addAttribute("course", course);
+		return "course";
+	}
 }

@@ -81,6 +81,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void saveCourse(CourseDto courseDto) {
 		    Course course = new Course();
+		    course.setId(courseDto.getId());
 		    course.setName(courseDto.getName());
 	        course.setDayOfWeek(courseDto.getDayOfWeek());
 	        course.setDropInPrice(courseDto.getDropInPrice());
