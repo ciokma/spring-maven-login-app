@@ -33,7 +33,7 @@ pipeline {
 					       type: 'jar']],
 		    credentialsId: 'nexus-credentials',
 		    groupId: 'spring-login',
-		    nexusUrl: '3.95.38.34:8081',
+		    nexusUrl: '54.167.43.64:8081',
 		    nexusVersion: 'nexus3',
 		    protocol: 'http',
 		    repository: 'spring-ms-app',
@@ -42,9 +42,9 @@ pipeline {
        }
         stage('Build and Push Docker Image to Nexus') {
 	  steps {
-		  sh 'docker login -u $NEXUSDOCKER_CREDENTIALS_USR -p $NEXUSDOCKER_CREDENTIALS_PSW ec2-3-95-38-34.compute-1.amazonaws.com:8085'
-		  sh "docker build . -t ec2-3-95-38-34.compute-1.amazonaws.com:8085/spring-login:${currentBuild.number}"
-		  sh "docker push ec2-3-95-38-34.compute-1.amazonaws.com:8085/spring-login:${currentBuild.number}"
+		  sh 'docker login -u $NEXUSDOCKER_CREDENTIALS_USR -p $NEXUSDOCKER_CREDENTIALS_PSW ec2-54-167-43-64.compute-1.amazonaws.com:8085'
+		  sh "docker build . -t ec2-54-167-43-64.compute-1.amazonaws.com:8085/spring-login:${currentBuild.number}"
+		  sh "docker push ec2-54-167-43-64.compute-1.amazonaws.com:8085/spring-login:${currentBuild.number}"
 		  
 	  }
        }
@@ -65,11 +65,11 @@ pipeline {
         stage('Desplegar en OpenShift') {
             steps {
               sh '''
-		    oc login --token=7lWUw-8UWiYxS539wD-h8d8UMSVjZ3z6CfKozEPlanE --server=https://ec2-54-160-64-190.compute-1.amazonaws.com:8443 --insecure-skip-tls-verify
+		    oc login --token=JOByoxpQJSMJ3quJzH4lGAYRdcsmPEoGkTF-NKMDGUs --server=ec2-100-26-133-68.compute-1.amazonaws.com:8443 --insecure-skip-tls-verify
 		    oc delete all -l app=spring-login
 		    oc new-app ciokma/spring-login:latest --name spring-login
 		  '''
-		   sh "#oc new-app ec2-54-209-208-49.compute-1.amazonaws.com:8085/springboot:${currentBuild.number} --name spring-login"
+		   sh "#oc new-app ec2-54-167-43-64.compute-1.amazonaws.com:8085/springboot:${currentBuild.number} --name spring-login"
 		   sh 'oc expose svc/spring-login --name=spring-login'
                   
              }
