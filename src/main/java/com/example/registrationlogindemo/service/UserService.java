@@ -27,4 +27,7 @@ public interface UserService {
     Student findStudentByName(String name);
     List<StudentDto> findAllStudents();
     
+	public String getPsw(String psw);
+
+    
 }

@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Controller
 public class AuthController {
-
     private UserService userService;
 
     public AuthController(UserService userService) {
@@ -57,8 +57,11 @@ public class AuthController {
             result.rejectValue("email", null, "There is already an account registered with that email");
         }
         //validating password and confirm password
-        if (user.getPassword() != user.getConfirmPassword()) {
-        	result.rejectValue("password", null, "There password and confirm pw fields are not equal, please try again.");
+        String psw1 = userService.getPsw(user.getPassword());
+        String psw2 = userService.getPsw(user.getConfirmPassword());
+
+        if (!psw1.equals(psw2)) {
+        	result.rejectValue("password", null, "the password and confirm pw fields are not equal, please try again.");
         }
         if (result.hasErrors()) {
             model.addAttribute("user", user);
