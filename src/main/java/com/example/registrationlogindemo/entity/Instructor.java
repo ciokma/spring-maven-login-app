@@ -14,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="users")
-public class User
+@Table(name="instructors")
+public class Instructor
 {
     public Long getId() {
 		return id;
@@ -74,9 +74,16 @@ public class User
 
     @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinTable(
-            name="users_roles",
-            joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
+            name="instructor_roles",
+            joinColumns={@JoinColumn(name="INSTRUCTOR_ID", referencedColumnName="ID")},
             inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")})
     private List<Role> roles = new ArrayList<>();
+    
+    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @JoinTable(
+            name="instructor_courses",
+            joinColumns={@JoinColumn(name="INSTRUCTOR_ID", referencedColumnName="ID")},
+            inverseJoinColumns={@JoinColumn(name="COURSE_ID", referencedColumnName="ID")})
+    private List<Course> courses = new ArrayList<>();
 
 }

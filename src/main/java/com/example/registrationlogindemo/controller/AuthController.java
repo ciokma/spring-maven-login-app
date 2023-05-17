@@ -1,7 +1,9 @@
 package com.example.registrationlogindemo.controller;
 
+import com.example.registrationlogindemo.dto.CourseDto;
 import com.example.registrationlogindemo.dto.UserDto;
-import com.example.registrationlogindemo.entity.User;
+import com.example.registrationlogindemo.entity.Course;
+import com.example.registrationlogindemo.entity.Instructor;
 import com.example.registrationlogindemo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -46,7 +48,7 @@ public class AuthController {
     public String registration(@Valid @ModelAttribute("user") UserDto user,
                                BindingResult result,
                                Model model){
-        User existing = userService.findByEmail(user.getEmail());
+        Instructor existing = userService.findByEmail(user.getEmail());
         if (existing != null) {
             result.rejectValue("email", null, "There is already an account registered with that email");
         }
@@ -63,5 +65,43 @@ public class AuthController {
         List<UserDto> users = userService.findAllUsers();
         model.addAttribute("users", users);
         return "users";
+    }
+    
+    // course method
+    
+    
+    // handler method to handle user registration request
+    @GetMapping("course")
+    public String course(Model model){
+    	CourseDto course = new CourseDto();
+        model.addAttribute("course", course);
+        return "course";
+    }
+    
+    
+ 
+
+    // handler method to handle register user form submit request
+    @PostMapping("/register_course")
+    public String register_course(@Valid @ModelAttribute("course") CourseDto course,
+                               BindingResult result,
+                               Model model){
+        Course existing = userService.findCourseByName(course.getName());
+        if (existing != null) {
+            result.rejectValue("email", null, "There is already an existing course registered with that name");
+        }
+        if (result.hasErrors()) {
+            model.addAttribute("course", course);
+            return "register";
+        }
+        userService.saveCourse(course);
+        return "redirect:/course?success";
+    }
+
+    @GetMapping("/courses")
+    public String listRegisteredCourses(Model model){
+        List<CourseDto> courses = userService.findAllCourses();
+        model.addAttribute("courses", courses);
+        return "courses";
     }
 }

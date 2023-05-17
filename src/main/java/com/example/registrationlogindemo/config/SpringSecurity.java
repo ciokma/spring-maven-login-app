@@ -26,24 +26,24 @@ public class SpringSecurity {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers("/register/**").permitAll()
-                                .requestMatchers("/index").permitAll()
-                                .requestMatchers("/users").hasAnyRole("USER", "ADMIN","ROLE_USER","ROLE_ADMIN")
-                                .requestMatchers("/admin/**").hasAnyRole("ADMIN")
-                ).formLogin(
-                        form -> form
-                                .loginPage("/login")
-                                .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/users", true)
-                                .permitAll()
-                ).logout(
-                        logout -> logout
-                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                                .permitAll()
-                );
-        return http.build();
+    	 http
+ 		.authorizeHttpRequests((requests) -> requests
+ 				.requestMatchers("/register/**").permitAll()
+                .requestMatchers("/users","/courses","/course").hasAnyRole("USER", "ADMIN","ROLE_USER","ROLE_ADMIN")
+                .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+ 				.anyRequest().authenticated()
+ 		)
+ 		.formLogin((form) -> form
+ 				.loginPage("/login")
+                 .loginProcessingUrl("/login")
+                 .defaultSuccessUrl("/users", true)
+                 .permitAll()
+ 		)
+ 		.logout((logout) -> logout
+ 				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+ 				.permitAll());
+
+         return http.build();
     }
 
     @Autowired

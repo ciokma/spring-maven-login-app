@@ -1,8 +1,8 @@
 package com.example.registrationlogindemo.security;
 
 import com.example.registrationlogindemo.entity.Role;
-import com.example.registrationlogindemo.entity.User;
-import com.example.registrationlogindemo.repository.UserRepository;
+import com.example.registrationlogindemo.entity.Instructor;
+import com.example.registrationlogindemo.repository.InstructorRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,20 +16,20 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private UserRepository userRepository;
+    private InstructorRepository instructorRepository;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(InstructorRepository instructorRepository) {
+        this.instructorRepository = instructorRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
+        Instructor instructor = instructorRepository.findByEmail(email);
 
-        if (user != null) {
-            return new org.springframework.security.core.userdetails.User(user.getEmail(),
-                    user.getPassword(),
-                    mapRolesToAuthorities(user.getRoles()));
+        if (instructor != null) {
+            return new org.springframework.security.core.userdetails.User(instructor.getEmail(),
+                    instructor.getPassword(),
+                    mapRolesToAuthorities(instructor.getRoles()));
         }else{
             throw new UsernameNotFoundException("Invalid username or password.");
         }
